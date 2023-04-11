@@ -18,12 +18,16 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
             return temp
         }
         fun create(): Macrophage {
-            return create(CellState(0,0,null))
+            val temp = create(CellState(0,0,null))
+            temp.work()
+
+            return temp
         }
     }
     val eattenCells = ArrayList<Microorganisms>()
     override var isActivated: Boolean = false
     override suspend fun move(x: Int, y: Int) {
+        log("moved to $x, $y")
         state.x = x
         state.y = y
     }
@@ -41,11 +45,15 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
     override fun work() {
         Scheduler.instance.createRepeatingTask(1000L){
             if(isActivated){
-                eattenCells.removeAt(1)
+                if(!eattenCells.isEmpty()) eattenCells.removeAt(0)
+                log("working")
                 runBlocking {
-                    taskToDo.get(0).execute(this@Macrophage)
+                    if(!taskToDo.isEmpty()) {
+                        taskToDo.get(0).execute(this@Macrophage)
+                        taskToDo.removeAt(0)
+                    }
                 }
-                taskToDo.removeAt(0)
+
             }
         }
     }

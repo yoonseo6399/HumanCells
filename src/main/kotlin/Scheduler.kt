@@ -1,12 +1,17 @@
 import kotlinx.coroutines.*
-class Scheduler {
+import things.Cells.Task
+
+class Scheduler(val scope: CoroutineScope) {
+
     companion object{
-        val instance = Scheduler()
+        var TaskMap = HashMap<Long,Job>()
+        @OptIn(DelicateCoroutinesApi::class)
+        var instance = Scheduler(GlobalScope)
     }
-    var lastTaskId = 0L
-    @OptIn(DelicateCoroutinesApi::class)
-    fun createDelayedTask(delay: Long, action: () -> Unit): Job =
-        GlobalScope.launch {
+    var lastTaskId:Long = 0L
+
+    fun createDelayedTask(delay: Long, action: () -> Unit): Job {
+        val job = scope.launch {
             try{
                 println("DelayedTask added")
                 delay(delay)
@@ -15,9 +20,13 @@ class Scheduler {
 
             }
         }
-    @OptIn(DelicateCoroutinesApi::class)
-    fun createRepeatingTask(repeatDelay: Long, startDelay: Long = 0L, action: (Int) -> Unit):Job =
-        GlobalScope.launch {
+        TaskMap.put(lastTaskId,job)
+        lastTaskId++
+        return job
+    }
+
+    fun createRepeatingTask(repeatDelay: Long, startDelay: Long = 0L, action: (Int) -> Unit):Job {
+        val job = scope.launch {
             delay(startDelay)
             var count = 1
             while (true){
@@ -26,4 +35,11 @@ class Scheduler {
                 delay(repeatDelay)
             }
         }
+        TaskMap.put(lastTaskId,job)
+        lastTaskId++
+        return job
+    }
+    fun cancelAllTasks(){
+        TaskMap.forEach { (_, j) -> j.cancel() }
+    }
 }

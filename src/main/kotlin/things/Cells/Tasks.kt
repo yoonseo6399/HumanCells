@@ -3,7 +3,7 @@ package things.Cells
 import things.Microorganisms
 
 class Tasks {
-    companion object{
+
         data class Moving(val moveToX: Int,val moveToY: Int): Task("MovingTask") {
             override suspend fun execute(cell: Cell) {
                 if(cell is Movable) cell.move(moveToX,moveToY)
@@ -19,5 +19,5 @@ class Tasks {
                 if(cell is Transformable) cell.transform(cell)
             }
         }
-    }
+
 }

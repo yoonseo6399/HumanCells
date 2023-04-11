@@ -1,19 +1,20 @@
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import things.Cells.Activatable
 import things.Cells.Cell
 import things.Cells.Macrophage
+import things.Cells.Tasks
 
 fun main(args: Array<String>) {
-    print("a")
-    log("a!")
-    Macrophage.create()
-    Macrophage.create()
-    Macrophage.create()
-    Macrophage.create()
-    println(Cell.cellList.size)
+    val job = Job()
+    Scheduler.instance = Scheduler(CoroutineScope(Dispatchers.Default + job))
+    Macrophage.create().addTask(Tasks.Moving(10,10))
+    val cell = Cell.cellList[0]
+    if(cell is Activatable) cell.isActivated = true
 
-
-
+    runBlocking {
+        job.join()
+    }
+    Scheduler.instance.cancelAllTasks()
 }
 
 
