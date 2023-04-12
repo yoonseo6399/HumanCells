@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
     }
 
     for(i in a.indices){
+        if(i == 0) continue
         a.get(0).addTask(Tasks.Attack(victim = a.get(i)))
     }
 

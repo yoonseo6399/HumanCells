@@ -9,9 +9,21 @@ data class Attribute(val movementSpeed: Float, val maxhealth: Float, val attackS
     }
 }
 open class AttackType{
-    class Melting(val meltingSpeed: Float): AttackType()
-    data class Ordering(val range: Float): AttackType()
-    data class Order_SelfDying(val range: Float): AttackType()
+    class Melting(val meltingSpeed: Float): AttackType(){
+        override fun toString(): String {
+            return "Melting"
+        }
+    }
+    data class Ordering(val range: Float): AttackType(){
+        override fun toString(): String {
+            return "Ordering"
+        }
+    }
+    data class Order_SelfDying(val range: Float): AttackType(){
+        override fun toString(): String {
+            return "Self_Dying"
+        }
+    }
     class UnAttackable(): AttackType()
 }
 abstract class  AttackStat<T: Microorganisms>(val cooldown: Float, val type:AttackType){

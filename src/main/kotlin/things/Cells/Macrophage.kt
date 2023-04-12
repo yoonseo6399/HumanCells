@@ -2,6 +2,8 @@ package things.Cells
 
 import State
 import Scheduler
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import log
@@ -55,14 +57,15 @@ class Macrophage(val name: String, override val state: State) : Cell(), Attackab
     }
 
     override val taskToDo: ArrayList<Task> = ArrayList()
+    var workJob: Job? = null
     override fun work() {
-        Scheduler.instance.createRepeatingTask(1000L){
+        workJob = Scheduler.instance.createRepeatingTask(1000L){
             if(isActivated){
                 if(!eattenCells.isEmpty()){
                     eattenCells.get(0).die("$this kill you AttackType: ${attribute.attackStat.type}")
                     eattenCells.removeAt(0)
                 }
-                log("working")
+                //log("working ${this@Macrophage}")
                 runBlocking {
                     if(!taskToDo.isEmpty()) {
                         taskToDo.get(0).execute(this@Macrophage)
@@ -83,6 +86,7 @@ class Macrophage(val name: String, override val state: State) : Cell(), Attackab
     override fun die(reason: String) {
         list.remove(this)
         cellList.remove(this)
+        workJob?.cancel()
         log("$this died by $reason")
     }
 
