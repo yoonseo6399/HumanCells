@@ -7,9 +7,19 @@ import things.Cells.Tasks
 fun main(args: Array<String>) {
     val job = Job()
     Scheduler.instance = Scheduler(CoroutineScope(Dispatchers.Default + job))
-    Macrophage.create().addTask(Tasks.Moving(10,10))
-    val cell = Cell.cellList[0]
-    if(cell is Activatable) cell.isActivated = true
+    val a = listOf(Macrophage.create(),Macrophage.create(),Macrophage.create(),Macrophage.create())
+    a.forEach { it.isActivated = true }
+    a.forEach {
+        it.state.x=(Math.random()*10).toInt()
+        it.state.y=(Math.random()*10).toInt()
+    }
+
+    for(i in a.indices){
+        a.get(0).addTask(Tasks.Attack(victim = a.get(i)))
+    }
+
+
+
 
     runBlocking {
         job.join()

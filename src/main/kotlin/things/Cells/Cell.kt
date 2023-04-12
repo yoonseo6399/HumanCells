@@ -1,5 +1,6 @@
 package things.Cells
 
+import State
 import things.Microorganisms
 
 abstract class Cell : Microorganisms {
@@ -11,6 +12,7 @@ abstract class Cell : Microorganisms {
         cellList.add(this)
     }
     abstract val taskToDo : ArrayList<Task>
+
     fun addTask(task: Task){
         taskToDo.add(task)
     }

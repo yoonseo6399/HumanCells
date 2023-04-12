@@ -1,16 +1,27 @@
 package things.Cells
 
-import CellState
+import State
 import Scheduler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import log
 import things.Microorganisms
 
-class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , Reproducible,Activatable,Movable{
+class Macrophage(val name: String, override val state: State) : Cell(), Attackable , Reproducible,Activatable,Movable{
+
+
+    val a = object : AttackStat<Microorganisms>(1000F,AttackType.Melting(100F)) {
+        override fun attack(victim: Microorganisms) {
+            victim.attacked(this@Macrophage)
+        }
+    }
+    override val attribute: Attribute = Attribute(1f,200f,a)
+
+
     companion object{
         var count = 0
         val list = ArrayList<Macrophage>()
-        fun create(cellState: CellState): Macrophage {
+        fun create(cellState: State): Macrophage {
             val temp = Macrophage("Macrophage$count",cellState)
             count++
             list.add(temp)
@@ -18,7 +29,7 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
             return temp
         }
         fun create(): Macrophage {
-            val temp = create(CellState(0,0,null))
+            val temp = create(State(0,0,null))
             temp.work()
 
             return temp
@@ -26,7 +37,9 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
     }
     val eattenCells = ArrayList<Microorganisms>()
     override var isActivated: Boolean = false
+
     override suspend fun move(x: Int, y: Int) {
+        delay(500L)
         log("moved to $x, $y")
         state.x = x
         state.y = y
@@ -38,14 +51,17 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
     }
 
     override fun produce(): Cell {
-        return create(CellState(state.x,state.y, null))
+        return create(State(state.x,state.y, null))
     }
 
     override val taskToDo: ArrayList<Task> = ArrayList()
     override fun work() {
         Scheduler.instance.createRepeatingTask(1000L){
             if(isActivated){
-                if(!eattenCells.isEmpty()) eattenCells.removeAt(0)
+                if(!eattenCells.isEmpty()){
+                    eattenCells.get(0).die("$this kill you AttackType: ${attribute.attackStat.type}")
+                    eattenCells.removeAt(0)
+                }
                 log("working")
                 runBlocking {
                     if(!taskToDo.isEmpty()) {
@@ -53,7 +69,6 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
                         taskToDo.removeAt(0)
                     }
                 }
-
             }
         }
     }
@@ -61,12 +76,19 @@ class Macrophage(val name: String,val state: CellState) : Cell(), Attackable , R
 
 
     override fun attacked(attacker: Attackable): Boolean {
-        TODO("Not yet implemented")
+        state.focused = attacker
+        return true
     }
 
-    override fun attack(thing: Microorganisms) {
+    override fun die(reason: String) {
+        list.remove(this)
+        cellList.remove(this)
+        log("$this died by $reason")
+    }
 
-        if(thing.attacked(this)) eattenCells.add(thing)
-
+    override suspend fun attack(victim: Microorganisms) {
+        state.focused = victim
+        victim.attacked(this@Macrophage)
+        if(victim.attacked(this)) eattenCells.add(victim)
     }
 }
