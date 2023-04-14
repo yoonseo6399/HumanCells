@@ -11,8 +11,15 @@ abstract class Cell : Microorganisms {
     init {
         cellList.add(this)
     }
+
+    /**
+     * 평범하게 구현좀..
+     */
     abstract val taskToDo : ArrayList<Task>
 
+    /**
+     * Task 추가 로직
+     */
     fun addTask(task: Task){
         taskToDo.add(task)
     }

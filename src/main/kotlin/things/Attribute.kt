@@ -2,7 +2,11 @@ package things.Cells
 
 import things.Microorganisms
 
-data class Attribute(val movementSpeed: Float, val maxhealth: Float, val attackStat: AttackStat<Microorganisms>) {
+/**
+ * memoized cell's Attributes, example:
+ * maxhealth
+ */
+data class Attribute(val movementSpeed: Float, val maxhealth: Float) {
     var health = 0f
     init {
         health = maxhealth

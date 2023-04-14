@@ -1,5 +1,5 @@
 package things.Cells
 
 interface Transformable {
-    fun transform(cell: Cell)
+    fun <T: Cell> transform(cell: T)
 }

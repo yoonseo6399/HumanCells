@@ -1,5 +1,5 @@
 package things.Cells
 
 interface Movable {
-    suspend fun move(x: Int, y: Int)
+    suspend fun move(x: Double, y: Double)
 }
