@@ -1,11 +1,16 @@
 package things.Cells
 
 import State
+import isInRange
 import things.Microorganisms
 
 abstract class Cell : Microorganisms {
+    abstract override val state : State
     companion object {
         val cellList = mutableListOf<Cell>()
+
+        fun getNearbyCell(x: Double,y: Double,range: Double) =
+            cellList.filter { isInRange(x,y,it.state.x,it.state.y,range) }
     }
 
     init {

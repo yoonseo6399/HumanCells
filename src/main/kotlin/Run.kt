@@ -1,12 +1,11 @@
 import annotations.RunAnnotations
-import display.img.Frame
 import kotlinx.coroutines.*
 import things.Cells.Types.Macrophage
-import things.Cells.Tasks
+import java.awt.Point
+import java.lang.Math.sqrt
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.crypto.Mac
-import kotlin.collections.ArrayList
+import kotlin.math.sqrt
 
 fun main(args: Array<String>) {
 
@@ -59,4 +58,21 @@ fun logWithPrefix(message: String){
     )
 
 
+}
+
+
+/*
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+
+
+
+
+
+ */
+/**
+ * 그냥 range 안에 있으면 true ㅇㅋ?
+ */
+fun isInRange(x1: Double, y1: Double, x2: Double, y2: Double, range: Double): Boolean{
+    val distance = kotlin.math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
+    return distance <= range
 }

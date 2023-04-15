@@ -16,22 +16,30 @@ class RunAnnotations {
     }
     fun run(){
         runLog()
+        runMust()
     }
 
 
-
+    val reflections = Reflections(
+        ConfigurationBuilder()
+            .setUrls(ClasspathHelper.forPackage("kotlin"))
+            .setScanners(
+                SubTypesScanner(false),
+                TypeAnnotationsScanner(),
+                FieldAnnotationsScanner()
+            )
+    )
     private fun runLog(){
+        val field = reflections.getFieldsAnnotatedWith(Log::class.java)
+
+        Scheduler.instance.createRepeatingTask(LOGGING_DELAY,0){
+            logWithPrefix(field.toString())
+        }
+    }
+    private fun runMust(){
 
 
-        val reflections = Reflections(
-            ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forPackage("kotlin"))
-                .setScanners(
-                    SubTypesScanner(false),
-                    TypeAnnotationsScanner(),
-                    FieldAnnotationsScanner()
-                )
-        )
+
         val field = reflections.getFieldsAnnotatedWith(Log::class.java)
 
         Scheduler.instance.createRepeatingTask(LOGGING_DELAY,0){
