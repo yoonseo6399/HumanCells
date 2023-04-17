@@ -15,6 +15,6 @@ data class Location(var x: Double, var y: Double) {
         y -= location.y
     }
 
-    fun getNearbyCells(range: Double) = Cell.getNearbyCell(x,y, range)
+    fun getNearbyCells(range: Double) = Cell.getNearbyCells(x,y, range)
 
 }

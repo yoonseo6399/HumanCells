@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
 //        if(i == 0) continue
 //        a.get(0).addTask(Tasks.Attack(victim = a.get(i)))
 //    }
-    Macrophage.create()
+
 
 
 

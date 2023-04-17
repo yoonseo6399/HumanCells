@@ -9,7 +9,7 @@ abstract class Cell : Microorganisms {
     companion object {
         val cellList = mutableListOf<Cell>()
 
-        fun getNearbyCell(x: Double,y: Double,range: Double) =
+        fun getNearbyCells(x: Double, y: Double, range: Double) =
             cellList.filter { isInRange(x,y,it.state.x,it.state.y,range) }
     }
 
