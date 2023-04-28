@@ -6,6 +6,7 @@ import things.Microorganisms
 
 abstract class Cell : Microorganisms {
     abstract override val state : State
+
     companion object {
         val cellList = mutableListOf<Cell>()
 

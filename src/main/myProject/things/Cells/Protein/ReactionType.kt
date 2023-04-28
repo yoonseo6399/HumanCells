@@ -1,24 +1,23 @@
 package things.Cells.Protein
 
-import things.Cells.Cell
+import things.Microorganisms
 
-open class Reaction<T : Any>(val reactionType: ReactionType,val action: ProteinBuilder.() -> Unit) {
+open class Reaction<T : Any>(val protein:Protein,val reactionType: ReactionType,val action: ReactBuilder<T>.() -> Unit) {
 
-//    constructor(reactionType: ReactionType,action: Protein.() -> Unit): this(reactionType,action.invoke(ProteinBuilder<*>()))
     fun react(): List<Protein>{
-        val builder = ProteinBuilder()
-        action.invoke(builder)
+        val builder = ReactBuilder<T>(protein)
+        action(builder)
         return builder.proteins
     }
-
-
 }
 data class ReactionType(val reactionName: String){
     companion object{
-        val ACTIVATIaON = ReactionType("activation")
+        val ACTIVATION = ReactionType("activation")
         val SEPARATE = ReactionType("separate")
-        val COMBINE = ReactionType("combine")
+        val COMBINE_PROTEIN = ReactionType("combine")
+        val ORDER = ReactionType("combine")
+        val ANCHORING = ReactionType("anchoring")
 
-//        class ACTIVATION<T: Protein> : Reaction<T>()
+
     }
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import log
 import logWithPrefix
 import things.Cells.*
+import things.Cells.Protein.Receptors.Receptor
 import things.Microorganisms
 import java.lang.Math.sqrt
 import kotlin.properties.Delegates
@@ -28,7 +29,7 @@ class Macrophage(val name: String, override val state: State ) : Cell(), Attacka
             victim.attacked(this@Macrophage)
         }
     }
-
+    override val receptors = listOf(Receptor.Default.Activation())
     override val attribute: Attribute = Attribute(1f,200f)
     override val attackStat: AttackStat<Microorganisms> = a
 
